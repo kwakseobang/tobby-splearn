@@ -18,11 +18,16 @@ public class Member {
 
     private MemberStatus status;
 
-    public Member(String email, String nickname, String passwordHash) {
+    private Member(String email, String nickname, String passwordHash) {
         this.email = Objects.requireNonNull(email);
         this.nickname = Objects.requireNonNull(nickname);
         this.passwordHash = Objects.requireNonNull(passwordHash);
         this.status = MemberStatus.PENDING;
+    }
+
+    public static Member create(String email, String nickname, String password, PasswordEncoder passwordEncoder) {
+        // 요가서 부가적인 작업이 일어날 수 있음.
+        return new Member(email, nickname, passwordEncoder.encode(password));
     }
 
     public void activate() {
@@ -35,6 +40,18 @@ public class Member {
         state(status == MemberStatus.ACTIVE, "Member is not ACTIVE.");
 
         this.status = MemberStatus.DEACTIVATED;
+    }
+
+    public boolean verifyPassword(String password, PasswordEncoder passwordEncoder) {
+        return passwordEncoder.matches(password, passwordHash);
+    }
+
+    public void changeNickname(String nickname) {
+        this.nickname = nickname;
+    }
+
+    public void changePassword(String password, PasswordEncoder passwordEncoder) {
+        this.passwordHash = passwordEncoder.encode(password);
     }
 
 }
