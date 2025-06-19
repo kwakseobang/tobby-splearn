@@ -1,5 +1,13 @@
 package org.kwakmunsu.splearn.domain;
 
+import static org.springframework.util.Assert.state;
+
+import java.util.Objects;
+import lombok.Getter;
+import lombok.ToString;
+
+@Getter
+@ToString
 public class Member {
 
     private String email;
@@ -10,28 +18,28 @@ public class Member {
 
     private MemberStatus status;
 
-
     public Member(String email, String nickname, String passwordHash) {
-        this.email = email;
-        this.nickname = nickname;
-        this.passwordHash = passwordHash;
+        this.email = Objects.requireNonNull(email);
+        this.nickname = Objects.requireNonNull(nickname);
+        this.passwordHash = Objects.requireNonNull(passwordHash);
         this.status = MemberStatus.PENDING;
     }
 
-    public String getEmail() {
-        return email;
+    public void activate() {
+        state(status == MemberStatus.PENDING, "Member is not PENDING.");
+
+        this.status = MemberStatus.ACTIVE;
     }
 
-    public String getNickname() {
-        return nickname;
-    }
+    public void deactivate() {
+        state(status == MemberStatus.ACTIVE, "Member is not ACTIVE.");
 
-    public String getPasswordHash() {
-        return passwordHash;
-    }
-
-    public MemberStatus getStatus() {
-        return status;
+        this.status = MemberStatus.DEACTIVATED;
     }
 
 }
+
+//* state util method
+// if 문은 시선을 많이 뻇어 핵심 로직에 집중할 수 없다. 간결하게 작성.
+// 해당 메소드가 실행이 되는 시점 혹은 어떤 작업을 하기 전에 반드시 이 상태이어야 하거나 파라미터의 조건을 체크할 떄 많이 사용
+// */
