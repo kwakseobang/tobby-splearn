@@ -112,15 +112,22 @@ class MemberTest {
     @DisplayName("회원 상태가 Active인지 확인한다")
     @Test
     void isActive() {
-        // given
         assertThat(member.isActive()).isFalse();
         member.activate();
         assertThat(member.isActive()).isTrue();
         member.deactivate();
         assertThat(member.isActive()).isFalse();
-        // when
+    }
 
-        // then
+    @DisplayName("이메일 형식이 맞지 않으면 예외를 던진다.")
+    @Test
+    void invalidEmail() {
+        // given
+        assertThatThrownBy(() ->
+                Member.create(new MemberCreateDomainRequest("invalidEmail", "kwak", "secret"), passwordEncoder)
+                ).isInstanceOf(IllegalArgumentException.class);
+
+        Member.create(new MemberCreateDomainRequest("iii148389@gmail.com", "kwak", "secret"), passwordEncoder);
     }
 
 }

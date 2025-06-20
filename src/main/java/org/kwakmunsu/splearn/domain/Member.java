@@ -3,6 +3,7 @@ package org.kwakmunsu.splearn.domain;
 import static java.util.Objects.requireNonNull;
 import static org.springframework.util.Assert.state;
 
+import java.util.regex.Pattern;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -13,7 +14,7 @@ import lombok.ToString;
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class Member {
 
-    private String email;
+    private Email email;
 
     private String nickname;
 
@@ -28,7 +29,7 @@ public class Member {
     public static Member create(MemberCreateDomainRequest request, PasswordEncoder passwordEncoder) {
         Member member = new Member();
 
-        member.email = requireNonNull(request.email());
+        member.email = new Email(request.email());
         member.nickname = requireNonNull(request.nickname());
         member.passwordHash = requireNonNull(passwordEncoder.encode(request.password()));
 
