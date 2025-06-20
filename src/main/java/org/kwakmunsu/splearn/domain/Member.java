@@ -1,13 +1,16 @@
 package org.kwakmunsu.splearn.domain;
 
+import static java.util.Objects.requireNonNull;
 import static org.springframework.util.Assert.state;
 
-import java.util.Objects;
+import lombok.AccessLevel;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.ToString;
 
 @Getter
 @ToString
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class Member {
 
     private String email;
@@ -18,16 +21,20 @@ public class Member {
 
     private MemberStatus status;
 
-    private Member(String email, String nickname, String passwordHash) {
-        this.email = Objects.requireNonNull(email);
-        this.nickname = Objects.requireNonNull(nickname);
-        this.passwordHash = Objects.requireNonNull(passwordHash);
-        this.status = MemberStatus.PENDING;
-    }
+    // 오브젝트 파라미터 방식을 채택. -> 파라미터가 많을 경우
+    // 1. 내부에서 생성자로 만들면 파라미터 타입이 겹치거나 할 경우 순서가 꼬일 수도 있고 헷갈릴 수 있음
+    // 2. 빌더패턴은 값을 넣지 않으면 Null값 또는 0 등의 값이 들어가 빌드가 된다. 그럼 런타임 중에 버그가 일어날수있기에 신중해야함.
+    // 3. 따라서 필드에 직접 주입함.
+    public static Member create(MemberCreateDomainRequest request, PasswordEncoder passwordEncoder) {
+        Member member = new Member();
 
-    public static Member create(String email, String nickname, String password, PasswordEncoder passwordEncoder) {
-        // 요가서 부가적인 작업이 일어날 수 있음.
-        return new Member(email, nickname, passwordEncoder.encode(password));
+        member.email = requireNonNull(request.email());
+        member.nickname = requireNonNull(request.nickname());
+        member.passwordHash = requireNonNull(passwordEncoder.encode(request.password()));
+
+        member.status = MemberStatus.PENDING;
+
+        return member;
     }
 
     public void activate() {
@@ -47,13 +54,17 @@ public class Member {
     }
 
     public void changeNickname(String nickname) {
-        this.nickname = nickname;
+        this.nickname = requireNonNull(nickname);
     }
 
     public void changePassword(String password, PasswordEncoder passwordEncoder) {
-        this.passwordHash = passwordEncoder.encode(password);
+        this.passwordHash = passwordEncoder.encode(requireNonNull(password));
     }
 
+
+    public boolean isActive() {
+        return this.status == MemberStatus.ACTIVE;
+    }
 }
 
 //* state util method

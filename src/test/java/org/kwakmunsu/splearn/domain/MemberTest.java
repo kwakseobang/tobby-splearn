@@ -27,7 +27,7 @@ class MemberTest {
             }
         };
 
-        member = Member.create("iii6602@gmail.com", "kkk", "secret", passwordEncoder);
+        member = Member.create(new MemberCreateDomainRequest("iii6602@gmail.com", "kkk", "secret"), passwordEncoder);
     }
 
     @DisplayName("멤버를 생성한다")
@@ -107,6 +107,20 @@ class MemberTest {
     void changePassword() {
         member.changePassword("updatePassword", passwordEncoder);
         assertThat(member.verifyPassword("updatePassword", passwordEncoder)).isTrue();
+    }
+
+    @DisplayName("회원 상태가 Active인지 확인한다")
+    @Test
+    void isActive() {
+        // given
+        assertThat(member.isActive()).isFalse();
+        member.activate();
+        assertThat(member.isActive()).isTrue();
+        member.deactivate();
+        assertThat(member.isActive()).isFalse();
+        // when
+
+        // then
     }
 
 }
