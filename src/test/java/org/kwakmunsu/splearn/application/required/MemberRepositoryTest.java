@@ -1,6 +1,7 @@
 package org.kwakmunsu.splearn.application.required;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.kwakmunsu.splearn.domain.MemberFixture.createMemberRegisterRequest;
 import static org.kwakmunsu.splearn.domain.MemberFixture.createPasswordEncoder;
 
@@ -10,6 +11,7 @@ import org.junit.jupiter.api.Test;
 import org.kwakmunsu.splearn.domain.Member;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
+import org.springframework.dao.DataIntegrityViolationException;
 
 /**
  * 모든 빈을 다띄우지 않고 DataJpa repository가 동작하는데 필요로 하는 최소한의 Bean만 스프링 컨테이너에 띄운다.
@@ -42,6 +44,19 @@ class MemberRepositoryTest {
         * JPA를 사용하는 작업에서는 한번씩 해줘야 하는 작업이다.
         **/
         entityManager.flush();
+    }
+
+
+    @DisplayName("중복 이메일이 들어가면 실패한다")
+    @Test
+    void duplicateEmail() {
+        // given
+        Member member1 = Member.register(createMemberRegisterRequest(), createPasswordEncoder());
+        memberRepository.save(member1);
+        Member member2 = Member.register(createMemberRegisterRequest(), createPasswordEncoder());
+        // when & then
+        assertThatThrownBy(() -> memberRepository.save(member2))
+                .isInstanceOf(DataIntegrityViolationException.class);
     }
 
 }

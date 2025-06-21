@@ -14,16 +14,23 @@ import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
+import org.hibernate.annotations.NaturalId;
+import org.hibernate.annotations.NaturalIdCache;
 
+@NaturalIdCache // NaturalId 적용한 필드들이 캐싱이 된다.
 @ToString
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Entity
 public class Member {
 
-    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    // 비즈니스적으로 의미 있는 고유값(자연키, natural key)**을 나타내는 필드에 붙인다. JPA가 아닌 hibernate가 지원함
+    // 성능이 향상 됨. 캐싱 지원
+    @NaturalId
     @Embedded
     private Email email;
 
