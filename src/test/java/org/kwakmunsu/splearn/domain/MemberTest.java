@@ -2,6 +2,8 @@ package org.kwakmunsu.splearn.domain;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.kwakmunsu.splearn.domain.MemberFixture.createMemberRegisterRequest;
+import static org.kwakmunsu.splearn.domain.MemberFixture.createPasswordEncoder;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -15,24 +17,14 @@ class MemberTest {
 
     @BeforeEach
     void setUp() {
-        this.passwordEncoder = new PasswordEncoder() {
-            @Override
-            public String encode(String password) {
-                return password.toUpperCase();
-            }
+        this.passwordEncoder = createPasswordEncoder();
 
-            @Override
-            public boolean matches(String password, String passwordHash) {
-                return encode(password).equals(passwordHash);
-            }
-        };
-
-        member = Member.create(new MemberCreateDomainRequest("iii6602@gmail.com", "kkk", "secret"), passwordEncoder);
+        member = Member.register(createMemberRegisterRequest(), passwordEncoder);
     }
 
     @DisplayName("멤버를 생성한다")
     @Test
-    void createMember() {
+    void registerMember() {
         // then
         assertThat(member.getStatus()).isEqualTo(MemberStatus.PENDING);
     }
@@ -57,7 +49,6 @@ class MemberTest {
         assertThatThrownBy(member::activate)
                 .isInstanceOf(IllegalStateException.class);
     }
-
 
     @DisplayName("회원 탈퇴에 성공한다")
     @Test
@@ -124,10 +115,10 @@ class MemberTest {
     void invalidEmail() {
         // given
         assertThatThrownBy(() ->
-                Member.create(new MemberCreateDomainRequest("invalidEmail", "kwak", "secret"), passwordEncoder)
-                ).isInstanceOf(IllegalArgumentException.class);
+                Member.register(createMemberRegisterRequest("invalid Email"), passwordEncoder)
+        ).isInstanceOf(IllegalArgumentException.class);
 
-        Member.create(new MemberCreateDomainRequest("iii148389@gmail.com", "kwak", "secret"), passwordEncoder);
+        Member.register(createMemberRegisterRequest(), passwordEncoder);
     }
 
 }

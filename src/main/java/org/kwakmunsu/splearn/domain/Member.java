@@ -3,30 +3,42 @@ package org.kwakmunsu.splearn.domain;
 import static java.util.Objects.requireNonNull;
 import static org.springframework.util.Assert.state;
 
-import java.util.regex.Pattern;
+import jakarta.persistence.Embedded;
+import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
 
-@Getter
 @ToString
-@NoArgsConstructor(access = AccessLevel.PRIVATE)
+@Getter
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@Entity
 public class Member {
 
+    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+
+    @Embedded
     private Email email;
 
     private String nickname;
 
     private String passwordHash;
 
+    @Enumerated(EnumType.STRING)
     private MemberStatus status;
 
     // 오브젝트 파라미터 방식을 채택. -> 파라미터가 많을 경우
     // 1. 내부에서 생성자로 만들면 파라미터 타입이 겹치거나 할 경우 순서가 꼬일 수도 있고 헷갈릴 수 있음
     // 2. 빌더패턴은 값을 넣지 않으면 Null값 또는 0 등의 값이 들어가 빌드가 된다. 그럼 런타임 중에 버그가 일어날수있기에 신중해야함.
     // 3. 따라서 필드에 직접 주입함.
-    public static Member create(MemberCreateDomainRequest request, PasswordEncoder passwordEncoder) {
+    public static Member register(MemberRegisterRequest request, PasswordEncoder passwordEncoder) {
         Member member = new Member();
 
         member.email = new Email(request.email());
@@ -62,10 +74,10 @@ public class Member {
         this.passwordHash = passwordEncoder.encode(requireNonNull(password));
     }
 
-
     public boolean isActive() {
         return this.status == MemberStatus.ACTIVE;
     }
+
 }
 
 //* state util method
