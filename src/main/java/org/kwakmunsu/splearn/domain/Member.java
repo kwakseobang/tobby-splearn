@@ -20,7 +20,7 @@ import org.hibernate.annotations.NaturalIdCache;
 @Table(name = "MEMBER", uniqueConstraints =
 @UniqueConstraint(name = "UK_MEMBER_EMAIL_ADDRESS", columnNames = "email_address"))
 @NaturalIdCache // NaturalId 적용한 필드들이 캐싱이 된다.
-@ToString
+@ToString(callSuper = true) // 부모의 값도 같이 출력
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Entity
