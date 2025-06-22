@@ -1,98 +1,40 @@
 package org.kwakmunsu.splearn.application.provided;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.eq;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.kwakmunsu.splearn.domain.MemberStatus.PENDING;
 
-import java.util.ArrayList;
-import java.util.List;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.kwakmunsu.splearn.application.MemberService;
-import org.kwakmunsu.splearn.application.required.EmailSender;
-import org.kwakmunsu.splearn.application.required.MemberRepository;
-import org.kwakmunsu.splearn.domain.Email;
+import org.kwakmunsu.splearn.SplearnTestConfiguration;
+import org.kwakmunsu.splearn.domain.DuplicateEmailException;
 import org.kwakmunsu.splearn.domain.Member;
 import org.kwakmunsu.splearn.domain.MemberFixture;
-import org.kwakmunsu.splearn.domain.MemberStatus;
-import org.mockito.Mockito;
-import org.springframework.test.util.ReflectionTestUtils;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.context.annotation.Import;
+import org.springframework.transaction.annotation.Transactional;
 
-class MemberRegisterTest {
+@Transactional // 테스트 후 DB 변경사항 자동 롤백(테스트 간 데이터 분리)
+@Import(SplearnTestConfiguration.class)
+@SpringBootTest
+public record MemberRegisterTest(MemberRegister memberRegister) {
 
-    @DisplayName("멤버 등록 stub 테스트")
+    @DisplayName("회원 등록")
     @Test
-    void registerTestStub() {
-        // given
-        MemberRegister memberRegister = new MemberService(
-                new MemberRepositoryStub(), new EmailSenderStub(), MemberFixture.createPasswordEncoder()
-        );
-        // when
+    void register() {
         Member member = memberRegister.register(MemberFixture.createMemberRegisterRequest());
-        // then
-        assertThat(member.getId()).isEqualTo(1L);
-        assertThat(member.getStatus()).isEqualTo(MemberStatus.PENDING);
+
+        assertThat(member.getId()).isNotNull();
+        assertThat(member.getStatus()).isEqualTo(PENDING);
     }
 
-    @DisplayName("멤버 등록 mock 테스트")
+    @DisplayName("이메일 중복 테스트")
     @Test
-    void registerTestMock() {
-        // given
-        EmailSenderMock emailSenderMock = new EmailSenderMock();
-        MemberRegister memberRegister = new MemberService(
-                new MemberRepositoryStub(), emailSenderMock, MemberFixture.createPasswordEncoder()
-        );
-        // when
+    void duplicateEmailFail() {
         Member member = memberRegister.register(MemberFixture.createMemberRegisterRequest());
-        // then
-        assertThat(member.getId()).isEqualTo(1L);
-        assertThat(member.getStatus()).isEqualTo(MemberStatus.PENDING);
 
-        assertThat(emailSenderMock.emails.size()).isEqualTo(1);
-        assertThat(emailSenderMock.emails.getFirst()).isEqualTo(member.getEmail());
-    }
-
-    @DisplayName("멤버 등록 mockito 테스트")
-    @Test
-    void registerTestMockito() {
-        // given
-        EmailSender emailSenderMock = Mockito.mock(EmailSender.class);
-        MemberRegister memberRegister = new MemberService(
-                new MemberRepositoryStub(), emailSenderMock, MemberFixture.createPasswordEncoder()
-        );
-        // when
-        Member member = memberRegister.register(MemberFixture.createMemberRegisterRequest());
-        // then
-        assertThat(member.getId()).isEqualTo(1L);
-        assertThat(member.getStatus()).isEqualTo(MemberStatus.PENDING);
-
-        Mockito.verify(emailSenderMock).send(eq(member.getEmail()), any(), any());
-    }
-
-    static class MemberRepositoryStub implements MemberRepository {
-
-        @Override
-        public Member save(Member member) {
-            ReflectionTestUtils.setField(member, "id", 1L);
-            return member;
-        }
-    }
-
-    static class EmailSenderStub implements EmailSender {
-
-        @Override
-        public void send(Email email, String subject, String body) {
-        }
-    }
-
-    static class EmailSenderMock implements EmailSender {
-
-        List<Email> emails = new ArrayList<>();
-
-        @Override
-        public void send(Email email, String subject, String body) {
-            emails.add(email);
-        }
+        assertThatThrownBy(() -> memberRegister.register(MemberFixture.createMemberRegisterRequest()))
+                .isInstanceOf(DuplicateEmailException.class);
     }
 
 }

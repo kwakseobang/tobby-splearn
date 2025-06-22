@@ -35,6 +35,8 @@
 
 ## test code tip!!
 - 변수 앞 타입 선언을 하지 않고 var 를 사용함. 생성자로 타입이 명시되어 있는데 중복으로 표시할 필요가 없다고 생각하고. 더 중요한 것에 시선이 감.
+- @Autowired가 많아지면 시선이 뻇기므로 recode로 사용하심 @TestConstructor(autowireMode = TestConstructor.AutowireMode.ALL)를 붙이는 방법도 있지만
+- 따로 junit-properties를 만들어서 설정함. 어노테이션 많아지니꼐
 
 ## 자잘한 Tip
 - 코드 작성 할떄 의미 있는 단위로 개행을 하자. 읽고 이해하기 편하다.
