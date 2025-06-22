@@ -10,7 +10,11 @@ import org.kwakmunsu.splearn.domain.Member;
 import org.kwakmunsu.splearn.domain.MemberRegisterRequest;
 import org.kwakmunsu.splearn.domain.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.validation.annotation.Validated;
 
+@Transactional
+@Validated
 @RequiredArgsConstructor
 @Service
 public class MemberService implements MemberRegister {
@@ -25,6 +29,7 @@ public class MemberService implements MemberRegister {
      * 이 기능을 수행하는가 누구와 협력을 하는 지 코드 안에서 잘 읽히도록 작성하는 걸 본다.
      * 애플리케이션 서비스 코드를 읽을 떄 해당 로직이 문서처럼 잘 읽히도록 구성해야 한다. 읽을 때 간결하게 읽히지 않는다면 리팩토링을 해라.
      * */
+
     @Override
     public Member register(MemberRegisterRequest request) {
         checkDuplicateEmail(request);

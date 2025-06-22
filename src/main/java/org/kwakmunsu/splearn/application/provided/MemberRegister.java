@@ -1,5 +1,6 @@
 package org.kwakmunsu.splearn.application.provided;
 
+import jakarta.validation.Valid;
 import org.kwakmunsu.splearn.domain.Member;
 import org.kwakmunsu.splearn.domain.MemberRegisterRequest;
 
@@ -8,6 +9,6 @@ import org.kwakmunsu.splearn.domain.MemberRegisterRequest;
 **/
 public interface MemberRegister {
 
-    Member register(MemberRegisterRequest request);
+    Member register(@Valid MemberRegisterRequest request);
 
 }

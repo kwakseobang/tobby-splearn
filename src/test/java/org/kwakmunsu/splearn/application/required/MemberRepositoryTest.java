@@ -25,7 +25,6 @@ class MemberRepositoryTest {
     @Autowired
     private EntityManager entityManager;
 
-
     @DisplayName("멤버 생성")
     @Test
     void createMember() {

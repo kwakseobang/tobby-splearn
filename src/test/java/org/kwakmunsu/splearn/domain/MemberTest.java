@@ -78,7 +78,7 @@ class MemberTest {
     @DisplayName("비밀번호 검증")
     @Test
     void verifyPassword() {
-        assertThat(member.verifyPassword("secret", passwordEncoder)).isTrue();
+        assertThat(member.verifyPassword("longsecret", passwordEncoder)).isTrue();
         assertThat(member.verifyPassword("hello", passwordEncoder)).isFalse();
     }
 
@@ -86,7 +86,7 @@ class MemberTest {
     @DisplayName("닉네임을 변경한다")
     @Test
     void changeNickname() {
-        assertThat(member.getNickname()).isEqualTo("kkk");
+        assertThat(member.getNickname()).isEqualTo("kkkwak");
 
         member.changeNickname("ktp");
 
