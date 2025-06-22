@@ -2,8 +2,10 @@ package org.kwakmunsu.splearn.application.provided;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.kwakmunsu.splearn.domain.MemberStatus.ACTIVE;
 import static org.kwakmunsu.splearn.domain.MemberStatus.PENDING;
 
+import jakarta.persistence.EntityManager;
 import jakarta.validation.ConstraintViolationException;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -19,7 +21,7 @@ import org.springframework.transaction.annotation.Transactional;
 @Transactional // 테스트 후 DB 변경사항 자동 롤백(테스트 간 데이터 분리)
 @Import(SplearnTestConfiguration.class)
 @SpringBootTest
-public record MemberRegisterTest(MemberRegister memberRegister) {
+record MemberRegisterTest(MemberRegister memberRegister, EntityManager entityManager) {
 
     @DisplayName("회원 등록")
     @Test
@@ -33,10 +35,25 @@ public record MemberRegisterTest(MemberRegister memberRegister) {
     @DisplayName("이메일 중복 테스트")
     @Test
     void duplicateEmailFail() {
-        Member member = memberRegister.register(MemberFixture.createMemberRegisterRequest());
+        memberRegister.register(MemberFixture.createMemberRegisterRequest());
 
         assertThatThrownBy(() -> memberRegister.register(MemberFixture.createMemberRegisterRequest()))
                 .isInstanceOf(DuplicateEmailException.class);
+    }
+
+    @DisplayName("activate")
+    @Test
+    void  activate() {
+        // 저장하고 조회할 떄는 flush & clear가 중요함. DB에 쿼리가 날라가는 지 확인.!
+        Member member = memberRegister.register(MemberFixture.createMemberRegisterRequest());
+        entityManager.flush();
+        entityManager.clear();
+
+        member = memberRegister.activate(member.getId());
+
+        entityManager.flush();
+
+        assertThat(member.getStatus()).isEqualTo(ACTIVE);
     }
 
     @DisplayName("멤버 request 실패")

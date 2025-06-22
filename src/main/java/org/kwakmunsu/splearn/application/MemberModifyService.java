@@ -1,6 +1,7 @@
 package org.kwakmunsu.splearn.application;
 
 import lombok.RequiredArgsConstructor;
+import org.kwakmunsu.splearn.application.provided.MemberFinder;
 import org.kwakmunsu.splearn.application.provided.MemberRegister;
 import org.kwakmunsu.splearn.application.required.EmailSender;
 import org.kwakmunsu.splearn.application.required.MemberRepository;
@@ -17,8 +18,9 @@ import org.springframework.validation.annotation.Validated;
 @Validated
 @RequiredArgsConstructor
 @Service
-public class MemberService implements MemberRegister {
+public class MemberModifyService implements MemberRegister {
 
+    private final MemberFinder memberFinder;
     private final MemberRepository memberRepository;
     private final EmailSender emailSender;
     private final PasswordEncoder passwordEncoder;
@@ -41,6 +43,15 @@ public class MemberService implements MemberRegister {
         sendWelcomeEmail(member);
 
         return member;
+    }
+
+    @Override
+    public Member activate(Long memberId) {
+        Member member = memberFinder.find(memberId);
+
+        member.activate();
+
+        return memberRepository.save(member);
     }
 
     private void sendWelcomeEmail(Member member) {
