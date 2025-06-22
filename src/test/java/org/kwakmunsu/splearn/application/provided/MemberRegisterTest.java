@@ -59,12 +59,12 @@ record MemberRegisterTest(MemberRegister memberRegister, EntityManager entityMan
     @DisplayName("멤버 request 실패")
     @Test
     void memberRegisterRequestFail() {
-        extracted(new MemberRegisterRequest("iii1483@gmail.com", "kkk", "longsecret"));
-        extracted(new MemberRegisterRequest("iii1483@gmail.com", "kkk123_________________________", "longsecret"));
-        extracted(new MemberRegisterRequest("iii1483gmail.com", "kkk", "longsecret"));
+        checkValidation(new MemberRegisterRequest("iii1483@gmail.com", "kkk", "longsecret"));
+        checkValidation(new MemberRegisterRequest("iii1483@gmail.com", "kkk123_________________________", "longsecret"));
+        checkValidation(new MemberRegisterRequest("iii1483gmail.com", "kkk", "longsecret"));
     }
 
-    private void extracted(MemberRegisterRequest request) {
+    private void checkValidation(MemberRegisterRequest request) {
         assertThatThrownBy(() -> memberRegister.register(request))
             .isInstanceOf(ConstraintViolationException.class);
     }
