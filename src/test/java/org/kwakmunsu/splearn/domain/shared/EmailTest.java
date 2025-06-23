@@ -1,4 +1,4 @@
-package org.kwakmunsu.splearn.domain;
+package org.kwakmunsu.splearn.domain.shared;
 
 import static org.assertj.core.api.Assertions.assertThat;
 

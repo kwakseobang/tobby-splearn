@@ -1,8 +1,8 @@
-package org.kwakmunsu.splearn.application.required;
+package org.kwakmunsu.splearn.application.member.required;
 
 import java.util.Optional;
-import org.kwakmunsu.splearn.domain.Email;
-import org.kwakmunsu.splearn.domain.Member;
+import org.kwakmunsu.splearn.domain.shared.Email;
+import org.kwakmunsu.splearn.domain.member.Member;
 import org.springframework.data.repository.Repository;
 
 /**

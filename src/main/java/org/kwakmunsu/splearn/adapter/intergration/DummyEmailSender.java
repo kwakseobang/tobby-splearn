@@ -1,7 +1,7 @@
 package org.kwakmunsu.splearn.adapter.intergration;
 
-import org.kwakmunsu.splearn.application.required.EmailSender;
-import org.kwakmunsu.splearn.domain.Email;
+import org.kwakmunsu.splearn.application.member.required.EmailSender;
+import org.kwakmunsu.splearn.domain.shared.Email;
 import org.springframework.context.annotation.Fallback;
 import org.springframework.stereotype.Component;
 

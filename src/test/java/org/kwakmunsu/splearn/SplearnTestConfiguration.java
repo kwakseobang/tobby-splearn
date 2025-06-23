@@ -1,8 +1,8 @@
 package org.kwakmunsu.splearn;
 
-import org.kwakmunsu.splearn.application.required.EmailSender;
-import org.kwakmunsu.splearn.domain.MemberFixture;
-import org.kwakmunsu.splearn.domain.PasswordEncoder;
+import org.kwakmunsu.splearn.application.member.required.EmailSender;
+import org.kwakmunsu.splearn.domain.member.MemberFixture;
+import org.kwakmunsu.splearn.domain.member.PasswordEncoder;
 import org.springframework.boot.test.context.TestConfiguration;
 import org.springframework.context.annotation.Bean;
 

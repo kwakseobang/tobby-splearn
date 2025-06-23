@@ -1,4 +1,4 @@
-package org.kwakmunsu.splearn.domain;
+package org.kwakmunsu.splearn.domain.shared;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Embeddable;

@@ -1,6 +1,6 @@
-package org.kwakmunsu.splearn.application.required;
+package org.kwakmunsu.splearn.application.member.required;
 
-import org.kwakmunsu.splearn.domain.Email;
+import org.kwakmunsu.splearn.domain.shared.Email;
 
 /**
  * 이메일을 발송한다.

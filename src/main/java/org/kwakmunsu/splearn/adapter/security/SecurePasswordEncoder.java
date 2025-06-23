@@ -1,6 +1,6 @@
 package org.kwakmunsu.splearn.adapter.security;
 
-import org.kwakmunsu.splearn.domain.PasswordEncoder;
+import org.kwakmunsu.splearn.domain.member.PasswordEncoder;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Component;
 

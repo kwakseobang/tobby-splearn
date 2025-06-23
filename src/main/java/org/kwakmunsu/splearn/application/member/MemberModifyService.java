@@ -1,15 +1,15 @@
-package org.kwakmunsu.splearn.application;
+package org.kwakmunsu.splearn.application.member;
 
 import lombok.RequiredArgsConstructor;
-import org.kwakmunsu.splearn.application.provided.MemberFinder;
-import org.kwakmunsu.splearn.application.provided.MemberRegister;
-import org.kwakmunsu.splearn.application.required.EmailSender;
-import org.kwakmunsu.splearn.application.required.MemberRepository;
-import org.kwakmunsu.splearn.domain.DuplicateEmailException;
-import org.kwakmunsu.splearn.domain.Email;
-import org.kwakmunsu.splearn.domain.Member;
-import org.kwakmunsu.splearn.domain.MemberRegisterRequest;
-import org.kwakmunsu.splearn.domain.PasswordEncoder;
+import org.kwakmunsu.splearn.application.member.provided.MemberFinder;
+import org.kwakmunsu.splearn.application.member.provided.MemberRegister;
+import org.kwakmunsu.splearn.application.member.required.EmailSender;
+import org.kwakmunsu.splearn.application.member.required.MemberRepository;
+import org.kwakmunsu.splearn.domain.member.DuplicateEmailException;
+import org.kwakmunsu.splearn.domain.shared.Email;
+import org.kwakmunsu.splearn.domain.member.Member;
+import org.kwakmunsu.splearn.domain.member.MemberRegisterRequest;
+import org.kwakmunsu.splearn.domain.member.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.annotation.Validated;

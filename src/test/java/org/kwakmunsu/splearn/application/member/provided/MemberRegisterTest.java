@@ -1,19 +1,19 @@
-package org.kwakmunsu.splearn.application.provided;
+package org.kwakmunsu.splearn.application.member.provided;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static org.kwakmunsu.splearn.domain.MemberStatus.ACTIVE;
-import static org.kwakmunsu.splearn.domain.MemberStatus.PENDING;
+import static org.kwakmunsu.splearn.domain.member.MemberStatus.ACTIVE;
+import static org.kwakmunsu.splearn.domain.member.MemberStatus.PENDING;
 
 import jakarta.persistence.EntityManager;
 import jakarta.validation.ConstraintViolationException;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.kwakmunsu.splearn.SplearnTestConfiguration;
-import org.kwakmunsu.splearn.domain.DuplicateEmailException;
-import org.kwakmunsu.splearn.domain.Member;
-import org.kwakmunsu.splearn.domain.MemberFixture;
-import org.kwakmunsu.splearn.domain.MemberRegisterRequest;
+import org.kwakmunsu.splearn.domain.member.DuplicateEmailException;
+import org.kwakmunsu.splearn.domain.member.Member;
+import org.kwakmunsu.splearn.domain.member.MemberFixture;
+import org.kwakmunsu.splearn.domain.member.MemberRegisterRequest;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.annotation.Import;
 import org.springframework.transaction.annotation.Transactional;

@@ -1,4 +1,4 @@
-package org.kwakmunsu.splearn.domain;
+package org.kwakmunsu.splearn.domain.member;
 
 public class DuplicateEmailException extends RuntimeException {
 

@@ -1,4 +1,5 @@
-package org.kwakmunsu.splearn.domain;
+package org.kwakmunsu.splearn.domain.member;
+
 /*
 * 테스트 코드에서 반복적으로 사용되는 도메인의 관련 데이터를 모아둔 클래스
 * */

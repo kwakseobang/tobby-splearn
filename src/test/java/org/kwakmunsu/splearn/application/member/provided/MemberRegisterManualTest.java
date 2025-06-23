@@ -1,4 +1,4 @@
-//package org.kwakmunsu.splearn.application.provided;
+//package org.kwakmunsu.splearn.application.member.provided;
 //
 //import static org.assertj.core.api.Assertions.assertThat;
 //import static org.mockito.ArgumentMatchers.any;
@@ -10,12 +10,12 @@
 //import org.junit.jupiter.api.DisplayName;
 //import org.junit.jupiter.api.Test;
 //import org.kwakmunsu.splearn.application.MemberService;
-//import org.kwakmunsu.splearn.application.required.EmailSender;
-//import org.kwakmunsu.splearn.application.required.MemberRepository;
-//import org.kwakmunsu.splearn.domain.Email;
-//import org.kwakmunsu.splearn.domain.Member;
-//import org.kwakmunsu.splearn.domain.MemberFixture;
-//import org.kwakmunsu.splearn.domain.MemberStatus;
+//import org.kwakmunsu.splearn.application.member.required.EmailSender;
+//import org.kwakmunsu.splearn.application.member.required.MemberRepository;
+//import org.kwakmunsu.splearn.domain.shared.Email;
+//import org.kwakmunsu.splearn.domain.member.Member;
+//import org.kwakmunsu.splearn.domain.member.MemberFixture;
+//import org.kwakmunsu.splearn.domain.member.MemberStatus;
 //import org.mockito.Mockito;
 //import org.springframework.test.util.ReflectionTestUtils;
 //

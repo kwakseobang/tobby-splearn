@@ -1,9 +1,9 @@
-package org.kwakmunsu.splearn.application;
+package org.kwakmunsu.splearn.application.member;
 
 import lombok.RequiredArgsConstructor;
-import org.kwakmunsu.splearn.application.provided.MemberFinder;
-import org.kwakmunsu.splearn.application.required.MemberRepository;
-import org.kwakmunsu.splearn.domain.Member;
+import org.kwakmunsu.splearn.application.member.provided.MemberFinder;
+import org.kwakmunsu.splearn.application.member.required.MemberRepository;
+import org.kwakmunsu.splearn.domain.member.Member;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.annotation.Validated;
