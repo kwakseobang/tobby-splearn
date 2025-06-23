@@ -6,11 +6,13 @@ import org.kwakmunsu.splearn.application.member.provided.MemberRegister;
 import org.kwakmunsu.splearn.application.member.required.EmailSender;
 import org.kwakmunsu.splearn.application.member.required.MemberRepository;
 import org.kwakmunsu.splearn.domain.member.DuplicateEmailException;
-import org.kwakmunsu.splearn.domain.member.MemberInfoUpdateRequest;
-import org.kwakmunsu.splearn.domain.shared.Email;
+import org.kwakmunsu.splearn.domain.member.DuplicateProfileException;
 import org.kwakmunsu.splearn.domain.member.Member;
+import org.kwakmunsu.splearn.domain.member.MemberInfoUpdateRequest;
 import org.kwakmunsu.splearn.domain.member.MemberRegisterRequest;
 import org.kwakmunsu.splearn.domain.member.PasswordEncoder;
+import org.kwakmunsu.splearn.domain.member.Profile;
+import org.kwakmunsu.splearn.domain.shared.Email;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.annotation.Validated;
@@ -68,9 +70,19 @@ public class MemberModifyService implements MemberRegister {
     public Member updateInfo(Long memberId, MemberInfoUpdateRequest request) {
         Member member = memberFinder.find(memberId);
 
+        checkDuplicateProfile(member, request.profileAddress());
         member.updateInfo(request);
 
         return memberRepository.save(member);
+    }
+
+    private void checkDuplicateProfile(Member member, String profileAddress) {
+        if (profileAddress.isEmpty()) return;
+        if (!member.isProfileNull() && member.isProfileEquals(profileAddress)) return;
+        if (memberRepository.findByProfile(new Profile(profileAddress)).isPresent()) {
+            throw new DuplicateProfileException("Duplicate profile address");
+        }
+
     }
 
     private void sendWelcomeEmail(Member member) {

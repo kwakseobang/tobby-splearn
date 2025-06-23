@@ -82,11 +82,9 @@ public class Member extends BaseEntity {
         return passwordEncoder.matches(password, passwordHash);
     }
 
-    public void changeNickname(String nickname) {
-        this.nickname = requireNonNull(nickname);
-    }
-
     public void updateInfo(MemberInfoUpdateRequest request) {
+        state(status == MemberStatus.ACTIVE, "회원 정보를 수정할 수 없습니다.");
+
         this.nickname = Objects.requireNonNull(request.nickname());
         this.detail.updateInfo(request);
     }
@@ -97,6 +95,14 @@ public class Member extends BaseEntity {
 
     public boolean isActive() {
         return this.status == MemberStatus.ACTIVE;
+    }
+
+    public boolean isProfileEquals(String profileAddress) {
+        return detail.isProfileEquals(profileAddress);
+    }
+
+    public boolean isProfileNull() {
+        return this.detail.getProfile() == null;
     }
 
 }

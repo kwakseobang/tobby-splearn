@@ -12,6 +12,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.kwakmunsu.splearn.SplearnTestConfiguration;
 import org.kwakmunsu.splearn.domain.member.DuplicateEmailException;
+import org.kwakmunsu.splearn.domain.member.DuplicateProfileException;
 import org.kwakmunsu.splearn.domain.member.Member;
 import org.kwakmunsu.splearn.domain.member.MemberFixture;
 import org.kwakmunsu.splearn.domain.member.MemberInfoUpdateRequest;
@@ -81,6 +82,13 @@ record MemberRegisterTest(MemberRegister memberRegister, EntityManager entityMan
         return member;
     }
 
+    private Member registerMember(String email) {
+        Member member = memberRegister.register(MemberFixture.createMemberRegisterRequest(email));
+        entityManager.flush();
+        entityManager.clear();
+        return member;
+    }
+
     @DisplayName("memberInfoUpdate")
     @Test
     void memberInfoUpdate() {
@@ -96,6 +104,37 @@ record MemberRegisterTest(MemberRegister memberRegister, EntityManager entityMan
         assertThat(member.getNickname()).isEqualTo(request.nickname());
         assertThat(member.getDetail().getProfile().address()).isEqualTo(request.profileAddress());
         assertThat(member.getDetail().getIntroduction()).isEqualTo(request.introduction());
+    }
+
+    @DisplayName("멤버 정보 업데이트 실패")
+    @Test
+    void updateInfoFail() {
+        Member member = registerMember();
+        memberRegister.activate(member.getId());
+        memberRegister.updateInfo(member.getId(), new MemberInfoUpdateRequest("kwakjjrkk", "kwakmunsu", "자기소개"));
+
+        Member member2 = registerMember("iikw@gmail.com");
+        memberRegister.activate(member2.getId());
+
+        entityManager.flush();
+        entityManager.clear();
+
+        // 타 회원과 같은 프로필 주소를 사용할 수 없다.
+        assertThatThrownBy(
+                () -> memberRegister.updateInfo(member2.getId(), new MemberInfoUpdateRequest("chatgpt", "kwakmunsu", "자기소개"))
+        ).isInstanceOf(DuplicateProfileException.class);
+
+        // 다른 프로필 주소로는 변경 가능
+        memberRegister.updateInfo(member2.getId(), new MemberInfoUpdateRequest("chatgpt", "kwakmunssddu", "자기소개"));
+        // 기존 프로필 주소를 바꾸는 것도 가능
+        memberRegister.updateInfo(member.getId(), new MemberInfoUpdateRequest("chatgpt", "kwakmunsu", "자기소개"));
+        // 프로필 주소를 제거하는 것도 가능
+        memberRegister.updateInfo(member.getId(), new MemberInfoUpdateRequest("chatgpt", "", "자기소개"));
+        // 프로필 주소 중복은 허용되지 않음
+        assertThatThrownBy(
+                () -> memberRegister.updateInfo(member.getId(), new MemberInfoUpdateRequest("chatgpt", "kwakmunssddu", "자기소개"))
+        ).isInstanceOf(DuplicateProfileException.class);
+
     }
 
     @DisplayName("멤버 request 실패")

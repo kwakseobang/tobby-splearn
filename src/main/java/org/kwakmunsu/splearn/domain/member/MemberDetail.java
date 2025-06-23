@@ -58,4 +58,8 @@ public class MemberDetail extends BaseEntity {
         this.introduction = Objects.requireNonNull(request.introduction());
     }
 
+    boolean isProfileEquals(String profileAddress) {
+        return profileAddress.equals(this.profile.address());
+    }
+
 }
