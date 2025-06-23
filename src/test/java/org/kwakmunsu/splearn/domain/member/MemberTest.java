@@ -1,9 +1,9 @@
-package org.kwakmunsu.splearn.domain;
+package org.kwakmunsu.splearn.domain.member;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static org.kwakmunsu.splearn.domain.MemberFixture.createMemberRegisterRequest;
-import static org.kwakmunsu.splearn.domain.MemberFixture.createPasswordEncoder;
+import static org.kwakmunsu.splearn.domain.member.MemberFixture.createMemberRegisterRequest;
+import static org.kwakmunsu.splearn.domain.member.MemberFixture.createPasswordEncoder;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -27,16 +27,20 @@ class MemberTest {
     void registerMember() {
         // then
         assertThat(member.getStatus()).isEqualTo(MemberStatus.PENDING);
+        assertThat(member.getDetail().getRegisteredAt()).isNotNull();
     }
 
     @DisplayName("회원 상태를 activate로 변경한다.")
     @Test
     void activate() {
+
+        assertThat(member.getDetail().getActivatedAt()).isNull();
         // when
         member.activate();
 
         // then
         assertThat(member.getStatus()).isEqualTo(MemberStatus.ACTIVE);
+        assertThat(member.getDetail().getActivatedAt()).isNotNull();
     }
 
     @DisplayName("회원 상태가 가입 대기 상태가 아닌데 가입 완료 시 예외를 던진다.")
@@ -54,6 +58,7 @@ class MemberTest {
     @Test
     void deactivate() {
         // given
+        assertThat(member.getDetail().getDeactivatedAt()).isNull();
         member.activate();
 
         // when
@@ -61,6 +66,7 @@ class MemberTest {
 
         // then
         assertThat(member.getStatus()).isEqualTo(MemberStatus.DEACTIVATED);
+        assertThat(member.getDetail().getDeactivatedAt()).isNotNull();
     }
 
     @DisplayName("회원 상태가 가입 완료 상태가 아닌데 탈퇴 시 예외를 던진다.")
@@ -121,4 +127,16 @@ class MemberTest {
         Member.register(createMemberRegisterRequest(), passwordEncoder);
     }
 
+    @DisplayName("회원 정보 업데이트")
+    @Test
+    void updateInfo() {
+        member.activate();
+        var request = new MemberInfoUpdateRequest("choi", "kwak0220", "자기소개하기");
+
+        member.updateInfo(request);
+
+        assertThat(member.getNickname()).isEqualTo(request.nickname());
+        assertThat(member.getDetail().getProfile().address()).isEqualTo(request.profileAddress());
+        assertThat(member.getDetail().getIntroduction()).isEqualTo(request.introduction());
+    }
 }
