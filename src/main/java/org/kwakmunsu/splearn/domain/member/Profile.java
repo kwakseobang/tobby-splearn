@@ -1,10 +1,11 @@
 package org.kwakmunsu.splearn.domain.member;
 
+import jakarta.persistence.Column;
 import jakarta.persistence.Embeddable;
 import java.util.regex.Pattern;
 
 @Embeddable
-public record Profile(String address) {
+public record Profile(@Column(name = "profile_address", length = 20)String address) {
     private static final Pattern PROFILE_ADDRESS_PATTERN =
             Pattern.compile("^[a-z0-9]+");
 

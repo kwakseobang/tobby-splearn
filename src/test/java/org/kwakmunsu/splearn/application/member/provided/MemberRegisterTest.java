@@ -3,6 +3,7 @@ package org.kwakmunsu.splearn.application.member.provided;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.kwakmunsu.splearn.domain.member.MemberStatus.ACTIVE;
+import static org.kwakmunsu.splearn.domain.member.MemberStatus.DEACTIVATED;
 import static org.kwakmunsu.splearn.domain.member.MemberStatus.PENDING;
 
 import jakarta.persistence.EntityManager;
@@ -13,6 +14,7 @@ import org.kwakmunsu.splearn.SplearnTestConfiguration;
 import org.kwakmunsu.splearn.domain.member.DuplicateEmailException;
 import org.kwakmunsu.splearn.domain.member.Member;
 import org.kwakmunsu.splearn.domain.member.MemberFixture;
+import org.kwakmunsu.splearn.domain.member.MemberInfoUpdateRequest;
 import org.kwakmunsu.splearn.domain.member.MemberRegisterRequest;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.annotation.Import;
@@ -45,17 +47,55 @@ record MemberRegisterTest(MemberRegister memberRegister, EntityManager entityMan
 
     @DisplayName("activate")
     @Test
-    void  activate() {
+    void activate() {
         // 저장하고 조회할 떄는 flush & clear가 중요함. DB에 쿼리가 날라가는 지 확인.!
-        Member member = memberRegister.register(MemberFixture.createMemberRegisterRequest());
-        entityManager.flush();
-        entityManager.clear();
+        Member member = registerMember();
 
         member = memberRegister.activate(member.getId());
 
         entityManager.flush();
 
         assertThat(member.getStatus()).isEqualTo(ACTIVE);
+        assertThat(member.getDetail().getActivatedAt()).isNotNull();
+    }
+
+    @DisplayName("deactivate")
+    @Test
+    void deactivate() {
+        Member member = registerMember();
+
+        memberRegister.activate(member.getId());
+        entityManager.flush();
+        entityManager.clear();
+
+        member = memberRegister.deactivate(member.getId());
+
+        assertThat(member.getStatus()).isEqualTo(DEACTIVATED);
+        assertThat(member.getDetail().getDeactivatedAt()).isNotNull();
+    }
+
+    private Member registerMember() {
+        Member member = memberRegister.register(MemberFixture.createMemberRegisterRequest());
+        entityManager.flush();
+        entityManager.clear();
+        return member;
+    }
+
+    @DisplayName("memberInfoUpdate")
+    @Test
+    void memberInfoUpdate() {
+        Member member = registerMember();
+
+        memberRegister.activate(member.getId());
+        entityManager.flush();
+        entityManager.clear();
+
+        var request = new MemberInfoUpdateRequest("kwakjjrkk", "kwakmunsu", "자기소개");
+        member = memberRegister.updateInfo(member.getId(), request);
+
+        assertThat(member.getNickname()).isEqualTo(request.nickname());
+        assertThat(member.getDetail().getProfile().address()).isEqualTo(request.profileAddress());
+        assertThat(member.getDetail().getIntroduction()).isEqualTo(request.introduction());
     }
 
     @DisplayName("멤버 request 실패")
@@ -68,7 +108,7 @@ record MemberRegisterTest(MemberRegister memberRegister, EntityManager entityMan
 
     private void checkValidation(MemberRegisterRequest request) {
         assertThatThrownBy(() -> memberRegister.register(request))
-            .isInstanceOf(ConstraintViolationException.class);
+                .isInstanceOf(ConstraintViolationException.class);
     }
 
 }

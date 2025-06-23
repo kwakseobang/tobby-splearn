@@ -6,6 +6,7 @@ import org.kwakmunsu.splearn.application.member.provided.MemberRegister;
 import org.kwakmunsu.splearn.application.member.required.EmailSender;
 import org.kwakmunsu.splearn.application.member.required.MemberRepository;
 import org.kwakmunsu.splearn.domain.member.DuplicateEmailException;
+import org.kwakmunsu.splearn.domain.member.MemberInfoUpdateRequest;
 import org.kwakmunsu.splearn.domain.shared.Email;
 import org.kwakmunsu.splearn.domain.member.Member;
 import org.kwakmunsu.splearn.domain.member.MemberRegisterRequest;
@@ -50,6 +51,24 @@ public class MemberModifyService implements MemberRegister {
         Member member = memberFinder.find(memberId);
 
         member.activate();
+
+        return memberRepository.save(member);
+    }
+
+    @Override
+    public Member deactivate(Long memberId) {
+        Member member = memberFinder.find(memberId);
+
+        member.deactivate();
+
+        return memberRepository.save(member);
+    }
+
+    @Override
+    public Member updateInfo(Long memberId, MemberInfoUpdateRequest request) {
+        Member member = memberFinder.find(memberId);
+
+        member.updateInfo(request);
 
         return memberRepository.save(member);
     }

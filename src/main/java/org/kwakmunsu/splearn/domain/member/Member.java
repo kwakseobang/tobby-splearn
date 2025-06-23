@@ -23,8 +23,11 @@ import org.hibernate.annotations.NaturalIdCache;
 import org.kwakmunsu.splearn.domain.BaseEntity;
 import org.kwakmunsu.splearn.domain.shared.Email;
 
-@Table(name = "MEMBER", uniqueConstraints =
-@UniqueConstraint(name = "UK_MEMBER_EMAIL_ADDRESS", columnNames = "email_address"))
+@Table(name = "MEMBER", uniqueConstraints = {
+        @UniqueConstraint(name = "UK_MEMBER_EMAIL_ADDRESS", columnNames = "email_address"),
+        @UniqueConstraint(name = "UK_MEMBER_DETAIL_ID", columnNames = "detail_id")
+}
+)
 @NaturalIdCache
 @ToString(callSuper = true, exclude = "detail")
 @Getter
